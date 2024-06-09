@@ -1,5 +1,5 @@
 fn main () {
-    use p52::{map_sum1, map_sum2, map_sum3, map_sum4};
+    use p52::{map_sum1, map_sum2, map_sum3, map_sum4, map_sum5};
 
     let data = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     let result = map_sum1::<4>(data, example_map_fn);
@@ -17,6 +17,10 @@ fn main () {
     let data = vec![1, 52, 3, 4, 25, 6, 47, 8, 9, 10];
     let result = map_sum4::<4>(data.clone(), example_map_fn);
     println!("Result [map_sum4] {:?}", result);
+
+    let mut data = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    let result = map_sum5(&mut data, |x| x * x, 2);
+    println!("Result [map_sum5] {:?}", result);
 }
 
 fn example_map_fn(x: u32) -> u64 {
