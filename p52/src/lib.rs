@@ -1,7 +1,7 @@
-use std::thread;
-use std::sync::{Arc, mpsc};
-use std::sync::atomic::{AtomicU64, Ordering};
 use rayon::prelude::*;
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::{mpsc, Arc};
+use std::thread;
 
 pub fn map_sum1<const N: usize>(data: Vec<u32>, map_fn: fn(u32) -> u64) -> u64 {
     let data_len = data.len();
@@ -36,10 +36,9 @@ pub fn map_sum1<const N: usize>(data: Vec<u32>, map_fn: fn(u32) -> u64) -> u64 {
 pub fn map_sum2<const N: usize>(data: Vec<u32>, map_fn: fn(u32) -> u64) -> u64 {
     let counter = AtomicU64::new(0);
 
-    data.into_par_iter()
-        .for_each(|num| {
-            counter.fetch_add(map_fn(num), Ordering::Relaxed);
-        });
+    data.into_par_iter().for_each(|num| {
+        counter.fetch_add(map_fn(num), Ordering::Relaxed);
+    });
 
     counter.load(Ordering::Relaxed)
 }
