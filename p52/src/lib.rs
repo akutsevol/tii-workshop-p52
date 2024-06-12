@@ -1,5 +1,5 @@
-use std::thread;
 use std::sync::Arc;
+use std::thread;
 
 pub fn map_sum1<const N: usize>(data: Vec<u32>, map_fn: fn(u32) -> u64) -> u64 {
     let data_len = data.len();
