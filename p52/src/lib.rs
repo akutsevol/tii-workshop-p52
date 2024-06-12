@@ -1,8 +1,8 @@
-use std::thread;
-use std::sync::{Arc, mpsc};
-use std::sync::atomic::{AtomicU64, AtomicU32, Ordering};
 use rayon::prelude::*;
 use scoped_threadpool::Pool;
+use std::sync::atomic::{AtomicU32, AtomicU64, Ordering};
+use std::sync::{mpsc, Arc};
+use std::thread;
 
 pub fn map_sum1<const N: usize>(data: Vec<u32>, map_fn: fn(u32) -> u64) -> u64 {
     let data_len = data.len();
@@ -37,10 +37,9 @@ pub fn map_sum1<const N: usize>(data: Vec<u32>, map_fn: fn(u32) -> u64) -> u64 {
 pub fn map_sum2<const N: usize>(data: Vec<u32>, map_fn: fn(u32) -> u64) -> u64 {
     let counter = AtomicU64::new(0);
 
-    data.into_par_iter()
-        .for_each(|num| {
-            counter.fetch_add(map_fn(num), Ordering::Relaxed);
-        });
+    data.into_par_iter().for_each(|num| {
+        counter.fetch_add(map_fn(num), Ordering::Relaxed);
+    });
 
     counter.load(Ordering::Relaxed)
 }
@@ -66,7 +65,6 @@ pub fn map_sum3<const N: usize>(data: Vec<u32>, map_fn: fn(u32) -> u64) -> u64 {
 pub fn map_sum4<const N: usize>(data: Vec<u32>, map_fn: fn(u32) -> u64) -> u64 {
     data.into_par_iter().map(map_fn).sum()
 }
-
 
 pub fn map_sum5<F>(data: &mut [u32], map_fn: F, num_threads: usize) -> u32
 where
@@ -133,5 +131,4 @@ mod tests {
         let result = map_sum5(&mut data, |x| x * x, 2);
         assert_eq!(result, 385); // 1^2 + 2^2 + ... + 10^2 = 385
     }
-
 }
